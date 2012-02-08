@@ -26,5 +26,4 @@ class Overview(horizon.Panel):
     name = "Overview"
     slug = 'overview'
 
-
 dashboard.Nova.register(Overview)

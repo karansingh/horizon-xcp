@@ -66,6 +66,8 @@ def require_roles(view_func, required):
 
     @functools.wraps(view_func, assigned=available_attrs(view_func))
     def dec(request, *args, **kwargs):
+#KDS
+	print("KDS in require_roles decorators.py\n")
         if request.user.is_authenticated():
             roles = set([role['name'].lower() for role in request.user.roles])
             # set operator <= tests that all members of set 1 are in set 2

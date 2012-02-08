@@ -42,8 +42,20 @@ def get_user_from_request(request):
     :exc:`~horizon.exceptions.NotAuthorized` will be raised.
     """
     if 'user_id' not in request.session:
+#KDS
+	print("KDS users.py - user_id is not in request.session\n")
         return User()
     try:
+#KDS add debug log
+	print ("KDS: users.py- id= %s,token= %s,user= %s,tenant_id= %s,tenant_name= %s,service_catalog= %s,roles= %s \n\n"
+		    % (request.session['user_id'],
+                    request.session['token'],
+                    request.session['user_name'],
+                    request.session['tenant_id'],
+                    request.session['tenant'],
+                    request.session['serviceCatalog'],
+                    request.session['roles']))
+
         return User(id=request.session['user_id'],
                     token=request.session['token'],
                     user=request.session['user_name'],
@@ -64,6 +76,8 @@ class LazyUser(object):
     def __get__(self, request, obj_type=None):
         if not hasattr(request, '_cached_user'):
             request._cached_user = get_user_from_request(request)
+#KDS add debug log
+	print("KDS users.py LazyUser invoked. Cache location: %s- Cached user: %s\n" % (request._cached_user,request._cached_user.username))
         return request._cached_user
 
 
@@ -109,12 +123,17 @@ class User(object):
         self.tenant_name = tenant_name
         self.service_catalog = service_catalog
         self.roles = roles or []
+#KDS add debug log
+        print ("KDS: users.py init- token: %s username: %s id: %s\n" %(self.token,self.username,self.id ))
 
     def is_authenticated(self):
         """
         Evaluates whether this :class:`.User` instance has been authenticated.
         Returns ``True`` or ``False``.
         """
+#KDS add debug log
+        print ("KDS: users.py is_authenticated? token: %s username: %s id: %s\n" %(self.token,self.username,self.id ))
+
         # TODO: deal with token expiration
         return self.token
 

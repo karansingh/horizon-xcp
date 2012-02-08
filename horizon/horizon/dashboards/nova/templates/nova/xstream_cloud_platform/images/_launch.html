@@ -1,0 +1,22 @@
+{% extends "horizon/common/_modal_form.html" %}
+{% load i18n %}
+
+{% block form_id %}{% endblock %}
+{% block form_action %}{% url horizon:nova:xstream_cloud_platform:images:launch image_id %}{% endblock %}
+
+{% block modal_id %}launch_image_{{ image_id }}{% endblock %}
+
+{% block modal-header %}Launch Instances{% endblock %}
+
+{% block modal-body %}
+<div class="left">
+    <fieldset>
+    {% include "horizon/common/_form_fields.html" %}
+    </fieldset>
+</div>
+{% endblock %}
+
+{% block modal-footer %}
+  <input class="btn primary pull-right" type="submit" value="{% trans "Launch Instance" %}" />
+  <a href="{% url horizon:nova:xstream_cloud_platform:images:index %}" class="btn secondary cancel close">Cancel</a>
+{% endblock %}

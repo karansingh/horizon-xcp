@@ -47,6 +47,8 @@ def login(request):
     """
     if request.user.is_authenticated():
         user = users.User(users.get_user_from_request(request))
+#KDS print
+        print("KDS in views/auth.py - login user: %s\n" % user)
         return shortcuts.redirect(Horizon.get_user_home(user))
 
     form, handled = Login.maybe_handle(request)

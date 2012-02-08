@@ -216,6 +216,7 @@ def update(request, instance_id):
     tenant_id = request.user.tenant_id
     try:
         instance = api.server_get(request, instance_id)
+        LOG.debug(("KDS: instance-name: %s instance-ip: %s" %(instance.name, instance.ip)))
     except api_exceptions.ApiException, e:
         LOG.exception(_('ApiException while fetching instance info'))
         messages.error(request,
@@ -244,6 +245,7 @@ def detail(request, instance_id):
     try:
         instance = api.server_get(request, instance_id)
         volumes = api.volume_instance_list(request, instance_id)
+	LOG.debug(("KDS: instance-name: %s instance-ip: %s" %(instance.name, instance.ip)))
         try:
             console = api.console_create(request, instance_id, 'vnc')
             vnc_url = "%s&title=%s(%s)" % (console.output,

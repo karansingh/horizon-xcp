@@ -52,7 +52,9 @@ def horizon(request):
     """
     context = {"True": True,
                "False": False}
-
+#KDS
+    print("KDS - in context_processor.py \n")
+    LOG.debug("KDS - LOG- in context_processor.py \n")
     # Auth/Keystone context
     context.setdefault('authorized_tenants', [])
     if request.user.is_authenticated():

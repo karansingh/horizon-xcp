@@ -1,0 +1,49 @@
+{% load i18n parse_date launch_form %}
+
+<div class="table_title">
+  <h3>Options</h3>
+  <div class="table_actions">
+    <div class="images table_search">
+      <form action="#">
+        <input class="span3" type="text">
+      </form>
+    </div>
+    <a class="inspect" href="#">{% trans "inspect" %}</a>
+  </div>
+</div>
+
+<table id="images" class="zebra-striped sortable">
+  <thead>
+    <tr>
+      <th>{% trans "Compute Resources" %}</th>
+      <th>{% trans "Type" %}</th>
+      <th>{% trans "Action" %}</th>
+    </tr>
+  </thead>
+  <tr class="{% cycle 'odd' 'even' %}">
+      <td>{% trans "CPU" %}</td>
+      <td>{% trans "Xeon E5520" %}</td>
+      <td>
+        <a class="btn small primary" data-backdrop="static" href="f85d3fdc-e465-41bd-84e9-8d7b4b1985d5/launch/" >{% trans "Launch" %}</a>
+      </td>
+  </tr>
+  <tr class="{% cycle 'odd' 'even' %}">
+      <td>{% trans "GPU" %}</td>
+      <td>{% trans "Tesla S2050" %}</td>
+      <td>
+        <a class="btn small primary" data-backdrop="static" href="f85d3fdc-e465-41bd-84e9-8d7b4b1985d5/launch/"  >{% trans "Launch" %}</a>
+      </td>
+  </tr>
+</table>
+
+{# {% for image in images %}
+  {% launch_form request request.user.tenant_id image.id as launch_form %}
+  {% include 'nova/images_and_snapshots/images/_launch.html' with form=launch_form image_id=image.id hide=True %}
+{% endfor %} #}
+
+
+{% for image in images %}
+  {% launch_form request request.user.tenant_id image.id as launch_form %}
+  {% include 'nova/xstream_cloud_platform/images/_launch.html' with form=launch_form image_id=image.id hide=True %}
+{% endfor %}
+

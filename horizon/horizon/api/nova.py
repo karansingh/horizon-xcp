@@ -216,14 +216,23 @@ def keypair_delete(request, keypair_id):
 def keypair_list(request):
     return [KeyPair(key) for key in novaclient(request).keypairs.list()]
 
+#KDS: for x-stream demo, we collect metadata, so additional parameter is added to provide meta
+# this is used by: horizon/openstack-dashboard/.dashboard-venv/src/python-novaclient/novaclient/v1_1/servers.py
+#def server_create(request, name, image, flavor,
+#                           key_name, user_data, security_groups):
+#    return Server(novaclient(request).servers.create(
+#            name, image, flavor, userdata=user_data,
+#            security_groups=security_groups,
+#            key_name=key_name), request)
 
 def server_create(request, name, image, flavor,
-                           key_name, user_data, security_groups):
+                           key_name, user_data, meta_data, security_groups):
+    LOG.debug('KDS: server_create called with name=%s user_data=%s meta_data=%s security=%s' %
+	     (name, user_data, meta_data, security_groups))
     return Server(novaclient(request).servers.create(
-            name, image, flavor, userdata=user_data,
+            name, image, flavor, userdata=user_data, meta=meta_data,
             security_groups=security_groups,
             key_name=key_name), request)
-
 
 def server_delete(request, instance):
     novaclient(request).servers.delete(instance)

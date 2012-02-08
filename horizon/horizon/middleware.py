@@ -42,6 +42,12 @@ class HorizonMiddleware(object):
 
         Adds a :class:`~horizon.users.User` object to ``request.user``.
         """
+#KDS
+	print("KDS middleware.py LazyUser is called\n")
+#KDS 
+	import os
+	print("KDS pid: %d\n" % os.getpid())
+
         request.__class__.user = users.LazyUser()
         request.horizon = {'dashboard': None, 'panel': None}
 
@@ -49,7 +55,7 @@ class HorizonMiddleware(object):
         """ Catch NotAuthorized and handle it gracefully. """
         if issubclass(exception.__class__, exceptions.NotAuthorized):
             messages.error(request, _(unicode(exception)))
-            return shortcuts.redirect('/auth/logout')
+            return shortcuts.redirect('/horizon/auth/logout')  #KDS added /horizon in front
 
         if type(exception) == openstackx.api.exceptions.Forbidden:
             # flush other error messages, which are collateral damage
@@ -58,4 +64,4 @@ class HorizonMiddleware(object):
                 pass
             messages.error(request,
                            _('Your token has expired. Please log in again'))
-            return shortcuts.redirect('/auth/logout')
+            return shortcuts.redirect('/horizon/auth/logout') #KDS added /horizon in front

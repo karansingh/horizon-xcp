@@ -196,6 +196,8 @@ def user_list(request, tenant_id=None):
 
 
 def user_create(request, user_id, email, password, tenant_id, enabled):
+#KDS: add to debug log
+    print("KDS keystone.py - user_create invoked\n")
     return User(keystoneclient(request).users.create(
             user_id, password, email, tenant_id, enabled))
 
@@ -205,6 +207,8 @@ def user_delete(request, user_id):
 
 
 def user_get(request, user_id):
+#KDS: add to debug log
+    print("KDS keystone.py - user_get invoked\n")
     return User(keystoneclient(request).users.get(user_id))
 
 

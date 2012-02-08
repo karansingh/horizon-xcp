@@ -34,8 +34,13 @@ SITE_BRANDING = 'OpenStack'
 SITE_NAME = 'openstack'
 ENABLE_VNC = True
 
-LOGIN_URL = '/auth/login'
-LOGIN_REDIRECT_URL = '/'
+#KDS LOGIN_URL = '/auth/login'
+#KDS LOGIN_REDIRECT_URL = '/'
+#KDS changed from /auth/login to /horizon/auth/login
+LOGIN_URL = '/horizon/auth/login'
+#KDS changed from / to /horizon
+LOGIN_REDIRECT_URL = '/horizon'
+
 
 MEDIA_ROOT = os.path.abspath(os.path.join(ROOT_PATH, '..', 'media'))
 MEDIA_URL = '/media/'

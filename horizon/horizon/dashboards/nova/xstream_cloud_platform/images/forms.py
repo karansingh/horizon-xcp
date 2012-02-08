@@ -102,14 +102,23 @@ class UpdateImageForm(forms.SelfHandlingForm):
                                       owner.'))
             return redirect('dash_images_update', tenant_id, image_id)
 
-
+#KDS: udated LaunchForm for x-stream demo
 class LaunchForm(forms.SelfHandlingForm):
-    name = forms.CharField(max_length=80, label=_("Server Name"))
+    name = forms.CharField(max_length=80, label=_("X-stream Server Name"))
     image_id = forms.CharField(widget=forms.HiddenInput())
     tenant_id = forms.CharField(widget=forms.HiddenInput())
-    user_data = forms.CharField(widget=forms.Textarea,
-                                label=_("User Data"),
-                                required=False)
+#    user_data = forms.CharField(widget=forms.HiddenInput())
+#    user_data = forms.CharField(widget=forms.Textarea,
+#                                label=_("Application User Data"),
+#                                required=False,
+#                                help_text="Add all the required meta-data")
+    meta_data = forms.CharField(widget=forms.Textarea,
+                                label=_("Application Meta-Data"),
+                                required=False,
+				help_text="Add all the required meta-data")
+
+#    print("KDS1 xcp forms.py: meta-data=%s \n" %(meta_data))
+#    flavorlist = forms.CharField(widget=forms.HiddenInput())
 
     # make the dropdown populate when the form is loaded not when django is
     # started
@@ -117,10 +126,11 @@ class LaunchForm(forms.SelfHandlingForm):
         super(LaunchForm, self).__init__(*args, **kwargs)
         flavorlist = kwargs.get('initial', {}).get('flavorlist', [])
         self.fields['flavor'] = forms.ChoiceField(
+#		widget=forms.HiddenInput(),
                 choices=flavorlist,
                 label=_("Flavor"),
                 help_text="Size of Image to launch")
-
+		
         keynamelist = kwargs.get('initial', {}).get('keynamelist', [])
         self.fields['key_name'] = forms.ChoiceField(choices=keynamelist,
                 label=_("Key Name"),
@@ -129,20 +139,20 @@ class LaunchForm(forms.SelfHandlingForm):
 
         securitygrouplist = kwargs.get('initial', {}).get(
                                                       'securitygrouplist', [])
-        self.fields['security_groups'] = forms.MultipleChoiceField(
-                choices=securitygrouplist,
-                label=_("Security Groups"),
-                required=True,
-                initial=['default'],
-                widget=forms.SelectMultiple(
-                       attrs={'class': 'chzn-select',
-                              'style': "min-width: 200px"}),
-                help_text="Launch instance in these Security Groups")
+#        self.fields['security_groups'] = forms.MultipleChoiceField(
+#                choices=securitygrouplist,
+#                label=_("Security Groups"),
+#                required=True,
+#                initial=['default'],
+#                widget=forms.SelectMultiple(
+#                       attrs={'class': 'chzn-select',
+#                              'style': "min-width: 200px"}),
+#                help_text="Launch instance in these Security Groups")
         # setting self.fields.keyOrder seems to break validation,
         # so ordering fields manually
         field_list = (
             'name',
-            'user_data',
+#            'user_data',
             'flavor',
             'key_name')
         for field in field_list[::-1]:
@@ -151,8 +161,11 @@ class LaunchForm(forms.SelfHandlingForm):
     def handle(self, request, data):
         image_id = data['image_id']
         tenant_id = data['tenant_id']
-#KDS: added meta data (to be sent to horizon backend)
-	meta_data =  {}
+#	flavor = "m1.tiny"
+#KDS: hack to give some valid user_data
+	user_data=data['tenant_id']
+	meta_data = {'input_array' : 'default_input', 'output_array' : 'default_output'}
+#        print("KDS4 xcp forms.py: dataget-metadata=%s\n" %(data.get('meta_data')))
         try:
             image = api.image_get_meta(request, image_id)
             flavor = api.flavor_get(request, data['flavor'])
@@ -161,10 +174,12 @@ class LaunchForm(forms.SelfHandlingForm):
                               image,
                               flavor,
                               data.get('key_name'),
-                              normalize_newlines(data.get('user_data')),
+                              user_data,
 			      meta_data,
+#			      data.get('meta_data'),
                               data.get('security_groups'))
- 
+#KDS: pass meta_data as 'meta' instead of 'user_data'
+	    print("KDS2 xcp forms.py: meta-data=%s dataget-metadata=%s\n" %(meta_data, data.get('meta_data')))
             msg = _('Instance was successfully launched')
             LOG.info(msg)
             messages.success(request, msg)
@@ -176,7 +191,7 @@ class LaunchForm(forms.SelfHandlingForm):
                            % image_id)
             messages.error(request,
                            _('Unable to launch instance: %s') % e.message)
-
+            print("KDS3 xcp forms.py: meta-data=%s dataget-metadata=%s\n" %(meta_data, data.get('meta_data')))
 
 class DeleteImage(forms.SelfHandlingForm):
     image_id = forms.CharField(required=True)
